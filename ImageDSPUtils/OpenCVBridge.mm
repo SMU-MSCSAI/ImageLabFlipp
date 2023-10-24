@@ -30,7 +30,10 @@ float globalNameScopeVector[10];
 #pragma mark ===Write Your Code Here===
 // you can define your own functions here for processing the image
 
-
+#pragma mark Process Finger function is define below
+-(bool)processFinger{
+    return false;
+}
 
 #pragma mark Define Custom Functions Here
 -(void)processImage{

@@ -31,6 +31,9 @@
 // call this to perfrom processing (user controlled for better transparency)
 -(void)processImage;
 
+// call this to perfrom finger processing ensuring that there's a finger or not
+-(void)processFinger;
+
 // for the video manager transformations
 -(void)setTransforms:(CGAffineTransform)trans;
 
