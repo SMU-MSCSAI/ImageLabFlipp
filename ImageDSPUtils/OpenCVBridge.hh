@@ -32,7 +32,7 @@
 -(void)processImage;
 
 // call this to perfrom finger processing ensuring that there's a finger or not
--(void)processFinger;
+-(bool)processFinger;
 
 // for the video manager transformations
 -(void)setTransforms:(CGAffineTransform)trans;
