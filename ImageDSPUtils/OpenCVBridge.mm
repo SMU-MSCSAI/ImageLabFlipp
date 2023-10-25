@@ -31,59 +31,63 @@ float globalNameScopeVector[10];
 // you can define your own functions here for processing the image
 
 #pragma mark Process Finger function is define below
-int fingerDetectedFrameCount = 0;
-const int requiredFrames = 30; // Assuming 30 FPS, this will make it 1 second
-
+// define the variables here so they retain their values
+int compositBlue[100];
+int compositGreen[100];
+int compositRed[100];
+int frameCount = 0; //track the number of frames to determine when to print
 -(bool)processFinger{
+    //====part2: These channeling is correct without grayscaling since, grayscaling will only return one channel which is Blue in my case====
     cv::Mat image_copy;
     Scalar avgPixelIntensity;
     
-    //====These channeling is correct without grayscaling since, grayscaling will only return one channel which is Blue in my case====
     cvtColor(_image, image_copy, CV_BGRA2BGR); // work with 3 channels(BGR)
     avgPixelIntensity = cv::mean(image_copy); //get the average intensity of each channel
-    
     double blue = avgPixelIntensity[0];
     double green = avgPixelIntensity[1];
     double red = avgPixelIntensity[2];
     
+    std::cout << "Blue: " << std::to_string(avgPixelIntensity[0]);
+    std::cout << "\nGreen: " << std::to_string(avgPixelIntensity[1]);
+    std::cout << "\nRed: " << std::to_string(avgPixelIntensity[2]);
+    
+    //==============================================================
+    
+    
+    //===Part 3==========================================================
+    // Thresholds selected based on the channell outputs on different lightings
     // Thresholds without flash
     bool conditionWithoutFlash = (round(blue) >= 0 && round(blue) <= 60) &&
-                                 (round(green) >= 0 && round(green) <= 60) &&
-                                 (round(red) >= 0 && round(red) <= 40);
+                                 (round(green) >= 0 && round(green) <= 20) &&
+                                 (round(red) >= 0 && round(red) <= 20);
     
-    std::cout << "\nBlue: " << std::to_string(avgPixelIntensity[0]);
-    std::cout << "Green: " << std::to_string(avgPixelIntensity[1]);
-    std::cout << "\nRed: " << std::to_string(avgPixelIntensity[2]);
-
     // Thresholds with flash
-    bool conditionWithFlash = (round(blue) >= 182 && round(blue) <= 216) &&
-                              (round(green) >= 0 && round(green) <= 10) &&
-                              (round(red) >= 0 && round(red) <= 30);
+    bool conditionWithFlash = (round(blue) >= 60 && round(blue) <= 250) &&
+                              (round(green) >= 0 && round(green) <= 20) &&
+                              (round(red) >= 0 && round(red) <= 100);
     
-    
+    //check if a finger is placed on a camera either with flash or no flash
     if (conditionWithoutFlash || conditionWithFlash) {
-        fingerDetectedFrameCount++;
-        
-        if (fingerDetectedFrameCount >= requiredFrames) {
-            fingerDetectedFrameCount = 0; // Reset the counter
-            return true;
+    
+        //store color averages if frame count is less than 100
+        if (frameCount < 100){
+            compositBlue[frameCount] = round(blue);
+            compositGreen[frameCount] = round(green);
+            compositRed[frameCount] = round(red);
+            frameCount++;
         }
+        //when the frame count is 100 write something in the image
+        if (frameCount == 100){
+            //draw a text with a green color 1 point thick with complex font on image_copy camera
+          cv::putText(_image, "Captured 100 frames", cv::Point(200,500), cv::FONT_HERSHEY_COMPLEX, 2, cv::Scalar::all(255), 1, 2);
+        }
+        
+        return true;
     } else {
-        fingerDetectedFrameCount = 0;
+        //reset the
+        frameCount=0;
+        return false;
     }
-    
-    return false;
-    
-
-//    std::cout << "Red: " << std::to_string(avgPixelIntensity[2]);
-//    if ((round(blue) >= 0 && round(blue) <= 60) || (round(blue) >= 200 && round(blue) <= 214)){
-//        return true;
-//    }
-//
-////    std::cout << "Blue: " << std::to_string(avgPixelIntensity[0]);
-////              << "Green: " << std::to_string(avgPixelIntensity[1])
-////              << " Red: " << std::to_string(avgPixelIntensity[2]);
-//    return false;
 }
 
 #pragma mark Define Custom Functions Here

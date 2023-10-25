@@ -24,6 +24,9 @@ class ViewController: UIViewController   {
     @IBOutlet weak var stageLabel: UILabel!
     @IBOutlet weak var cameraView: MTKView!
     
+    @IBOutlet weak var toggleCameraOutlet: UIButton!
+    @IBOutlet weak var toggleFlashOutlet: UIButton!
+    
     //MARK: ViewController Hierarchy
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,8 +67,12 @@ class ViewController: UIViewController   {
         let isFingerTouchingCamera = self.bridge.processFinger()
         
         if isFingerTouchingCamera {
+            self.toggleCameraOutlet.isEnabled = false
+            self.toggleFlashOutlet.isEnabled = false
             let val = self.videoManager.turnOnFlashwithLevel(1.0)
         }else{
+            toggleCameraOutlet.isEnabled = true
+            self.toggleFlashOutlet.isEnabled = true
             self.videoManager.turnOffFlash()
         }
         
