@@ -58,10 +58,17 @@ class ViewController: UIViewController   {
     //MARK: Process image output
     func processImageSwift(inputImage:CIImage) -> CIImage{
         
-       var retImage = inputImage
+        var retImage = inputImage
         
         self.bridge.setImage(retImage, withBounds: retImage.extent, andContext: self.videoManager.getCIContext())
-        self.bridge.processFinger()
+        let isFingerTouchingCamera = self.bridge.processFinger()
+        
+        if isFingerTouchingCamera {
+            let val = self.videoManager.turnOnFlashwithLevel(1.0)
+        }else{
+            self.videoManager.turnOffFlash()
+        }
+        
         retImage = self.bridge.getImage()
         
         return retImage
@@ -90,8 +97,6 @@ class ViewController: UIViewController   {
         //You can also send in the bounds of the face to ONLY process the face in OpenCV
         // or any bounds to only process a certain bounding region in OpenCV
         
-      
- 
     }
     
     //MARK: Setup Face Detection

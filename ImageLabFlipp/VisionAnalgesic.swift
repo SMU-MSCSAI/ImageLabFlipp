@@ -83,7 +83,7 @@ class VisionAnalgesic:NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, MT
     /// VisionAnagesic class requires that a MetalView (import MetalKit) is used and passed into the initializer. Class will keep a weak reference to this view. All rendered video will go to this view.
     init(view:MTKView){
         // When running for the first time, just set this to front
-        devicePosition = AVCaptureDevice.Position.front
+        devicePosition = AVCaptureDevice.Position.back
         
         super.init()
         
@@ -403,7 +403,7 @@ extension VisionAnalgesic {
         case AVCaptureDevice.Position.front:
             self.devicePosition = AVCaptureDevice.Position.back
         default:
-            self.devicePosition = AVCaptureDevice.Position.front
+            self.devicePosition = AVCaptureDevice.Position.back
         }
         
         self.reset()
